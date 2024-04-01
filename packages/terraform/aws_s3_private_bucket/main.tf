@@ -148,7 +148,7 @@ resource "aws_s3_bucket_intelligent_tiering_configuration" "bucket" {
 
 resource "aws_s3_bucket_policy" "bucket" {
   bucket = aws_s3_bucket.bucket.bucket
-  policy = var.access_policy == null ? "" : var.access_policy
+  policy = var.access_policy == null ? "{}" : var.access_policy
 }
 
 /***************************************************************

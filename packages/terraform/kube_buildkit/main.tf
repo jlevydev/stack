@@ -139,7 +139,10 @@ resource "kubernetes_stateful_set" "buildkit" {
     }
     template {
       metadata {
-        labels = module.kube_labels.kube_labels
+        labels = merge(
+          module.kube_labels.kube_labels,
+          local.match_labels
+        )
       }
       spec {
         service_account_name             = kubernetes_service_account.buildkit.metadata[0].name
