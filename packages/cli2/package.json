@@ -1,0 +1,77 @@
+{
+  "name": "cli2",
+  "description": "The new Panfactum CLI",
+  "version": "0.0.0",
+  "author": "Josh Levy",
+  "bin": {
+    "pf": "./bin/run.js"
+  },
+  "bugs": "https://github.com/Panfactum/stack/issues",
+  "dependencies": {
+    "@effect/platform": "^0.90.0",
+    "@effect/platform-bun": "^0.77.0",
+    "@oclif/core": "^4",
+    "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5",
+    "effect": "^3.17.3",
+    "ink": "^6.1.0",
+    "react": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1",
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4",
+    "@types/bun": "latest",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.9",
+    "@types/ws": "^8.18.1",
+    "chai": "^4",
+    "eslint": "^9",
+    "eslint-config-oclif": "^6",
+    "eslint-config-prettier": "^10",
+    "mocha": "^10",
+    "oclif": "^4",
+    "shx": "^0.3.3",
+    "ts-node": "^10",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "./bin",
+    "./dist",
+    "./oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/Panfactum/stack",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "type": "module",
+  "oclif": {
+    "bin": "pf",
+    "dirname": "pf",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ]
+  },
+  "repository": "Panfactum/stack",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "pnpm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "test": "vitest",
+    "version": "oclif readme && git add README.md"
+  },
+  "types": "dist/index.d.ts",
+  "private": true
+}

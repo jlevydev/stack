@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/commands/start/index.ts","./src/components/mainView.tsx","./src/effects/InkStateService.ts"],"version":"5.8.3"}
