@@ -1,25 +1,40 @@
 import React, {useState, useEffect} from 'react';
 import {Box, Text, useInput} from 'ink';
-import { InkStateService, IMainViewProps, getInkState, setCurrentKey } from '../effects/InkStateService.js';
-import { Effect, Layer, ManagedRuntime } from 'effect';
+import { InkStateService, IMainViewProps, getInkState, setCurrentKey } from '../services/InkStateService.js';
+import { Effect, Exit, Layer, ManagedRuntime } from 'effect';
 import { BunContext } from '@effect/platform-bun';
+import { FileSystemService } from '../services/FileSystemService.js';
+import {PanfactumConfigService } from '../services/PanfactumConfigService.js'
 
 const MainView: React.FC = () => {
     
-    const [viewState, setViewState] = useState({
-        directories: [],
-        currentKey: ""
-    } as IMainViewProps)
+    const [viewState, setViewState] = useState<IMainViewProps | undefined>()
     
     // TODO: Odd to me that InkStateLive can have a PlatformFailure but that doesn't trickle up in the type system when we use it to run events
     // Maybe something to consider as we draw our application boundaries that services should default launch
     const InkStateLive = Layer.provide(InkStateService.Default, BunContext.layer)
-    const runtime = ManagedRuntime.make(InkStateLive)
+    const GlobalConfigLive = Layer.mergeAll(PanfactumConfigService.Default, FileSystemService.Default, InkStateLive)
+    const runtime = ManagedRuntime.make(GlobalConfigLive)
 
     useEffect(() => {
-        runtime.runPromise(getInkState).then((inkState) => {
-            setViewState(inkState)
+        runtime.runPromiseExit(Effect.gen(function* () {
+            const configService = yield* PanfactumConfigService
+            return yield* configService.bootstrapPanfactumConfig
+        })).then((result) => {
+            Exit.match(result, {
+                onFailure: (cause) => {console.log(`${cause}`)},
+                onSuccess: (viewProps) => {setViewState({
+                    directories: viewProps.environments,
+                    currentKey: "YAY!"
+                })}
+            })
         })
+        // runtime.runPromiseExit(getInkState).then((inkState) => {
+        //     Exit.match(inkState, {
+        //         onFailure: (cause) => {},
+        //         onSuccess: (viewProps) => {setViewState(viewProps)}
+        //     })
+        // })
     }, [])
 
     // TODO: Schema validation at I/O boundary here
@@ -28,6 +43,10 @@ const MainView: React.FC = () => {
             setViewState(inkState)
         })
     })
+
+    if (viewState === undefined) {
+        return null
+    }
 
 	return (
         <Box flexDirection='column' borderStyle='round'>

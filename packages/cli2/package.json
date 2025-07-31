@@ -13,6 +13,7 @@
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5",
+    "@vitest/snapshot": "^3.2.4",
     "effect": "^3.17.3",
     "ink": "^6.1.0",
     "react": "^19.1.1"

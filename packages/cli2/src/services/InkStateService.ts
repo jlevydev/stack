@@ -1,6 +1,11 @@
 import { Effect, Ref } from "effect"
 import { FileSystem } from "@effect/platform" // TODO: Maybe dump
 
+interface IEnvironment {
+    directory: string
+    focused: boolean
+}
+
 interface IMainViewProps {
     directories: string[]
     currentKey: string
@@ -8,6 +13,9 @@ interface IMainViewProps {
 
 // TODO: Do we want to not use the .Serivce helper here? Docs are mixed on usage and it seems like it abstracts a lot
 class InkStateService extends Effect.Service<InkStateService>()("InkStateService", {
+
+
+
     effect: Effect.gen(function* () {
 
         const fs = yield* FileSystem.FileSystem
@@ -22,7 +30,9 @@ class InkStateService extends Effect.Service<InkStateService>()("InkStateService
         return {
             getState: Ref.get(inkState),
             updateCurrentKey: (key: string) =>
-                Ref.update(inkState, state => ({ ...state, currentKey: key }))
+                Ref.update(inkState, state => ({ ...state, currentKey: key })),
+            updateState: (newState: IMainViewProps) =>
+                Ref.update(inkState, () => (newState))
         } as const
     }),
     dependencies: []

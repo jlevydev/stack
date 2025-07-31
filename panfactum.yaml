@@ -1,0 +1,10 @@
+repo_name: stack
+repo_url: https://github.com/Panfactum/stack
+repo_primary_branch: main
+environments_dir: packages
+iac_dir: infrastructure
+aws_dir: .aws
+kube_dir: .kube
+ssh_dir: .ssh
+buildkit_dir: .buildkit
+nats_dir: .nats
