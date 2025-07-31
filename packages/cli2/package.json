@@ -8,12 +8,9 @@
   },
   "bugs": "https://github.com/Panfactum/stack/issues",
   "dependencies": {
-    "@effect/platform": "^0.90.0",
-    "@effect/platform-bun": "^0.77.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5",
-    "@vitest/snapshot": "^3.2.4",
     "effect": "^3.17.3",
     "ink": "^6.1.0",
     "react": "^19.1.1"
@@ -22,7 +19,7 @@
     "@eslint/compat": "^1",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/bun": "latest",
+    "@types/bun": "^1.2.19",
     "@types/chai": "^4",
     "@types/mocha": "^10",
     "@types/node": "^24.1.0",
@@ -36,8 +33,7 @@
     "oclif": "^4",
     "shx": "^0.3.3",
     "ts-node": "^10",
-    "typescript": "^5",
-    "vitest": "^3.2.4"
+    "typescript": "^5"
   },
   "engines": {
     "node": ">=18.0.0"

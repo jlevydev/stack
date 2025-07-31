@@ -1,0 +1,23 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test reading the default config 1`] = `
+{
+  "environments": [
+    "production",
+    "staging",
+    "development",
+  ],
+  "root": {
+    "aws_dir": ".aws",
+    "buildkit_dir": ".buildkit",
+    "environments_dir": "environments",
+    "iac_dir": "packages/infrastrucutre",
+    "kube_dir": ".kube",
+    "nats_dir": ".nat",
+    "repo_name": "stack",
+    "repo_primary_branch": "main",
+    "repo_url": "https://github.com/Panfactum/stack",
+    "ssh_dir": ".ssh",
+  },
+}
+`;

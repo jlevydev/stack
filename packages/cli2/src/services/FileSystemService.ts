@@ -1,6 +1,7 @@
 import { Effect } from "effect"
 import { readdir, readFile } from "node:fs/promises"
 import { load } from "js-yaml"
+import { execSync } from "node:child_process"
 
 // TODO: Path type with validation
 // TODO: Differentiate types in an "Effectful" way
@@ -21,6 +22,11 @@ class FileSystemService extends Effect.Service<FileSystemService>()("FileSystemS
             parseYaml: (yamlContent: Buffer) => Effect.try({
                 try: () => load(yamlContent.toString()),
                 catch: error => new Error(`unknown error reading file ${error}`)
+            }),
+            // TODO: Move to a git or shell call service
+            getRepoRoot: () => Effect.try({
+                try: () => execSync('git rev-parse --show-toplevel').toString().trim(),
+                catch: error => new Error(`unknown error when getting repo root ${error}`)
             })
         } as const
     }),

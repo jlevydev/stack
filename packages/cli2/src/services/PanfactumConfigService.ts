@@ -32,15 +32,15 @@ class PanfactumConfigService extends Effect.Service<PanfactumConfigService>()("P
             // TODO: Figure out how to get the interface from the decode
             bootstrapPanfactumConfig: Effect.gen(function* () {
                 // TODO: Replace with a call to git from git service
-                const fileSystemRoom = '/home/josh/personal/stack'
                 const fs = yield* FileSystemService
-                const file = yield* fs.readFile(`${fileSystemRoom}/panfactum.yaml`)
+                const fileSystemRoot = yield* fs.getRepoRoot()
+                const file = yield* fs.readFile(`${fileSystemRoot}/panfactum.yaml`)
                 const configBlob = yield* fs.parseYaml(file)
                 // TODO: Took me a second to get the typing to flow here with the schemas and the decode. 
                 // Still want to do more reading about the way this works since this is the approach that
                 // Got me an effect (which I'm more used to) but I don't know if it's right
-                const config = yield* Schema.decodeUnknown(PanfactumRootConfigSchema)(configBlob)
-                const environments = yield* fs.listFiles(`${fileSystemRoom}/${config.environments_dir}`)
+                const config = yield* Schema.decodeUnknown<PanfactumRootConfig, PanfactumRootConfig, never>(PanfactumRootConfigSchema)(configBlob)
+                const environments = yield* fs.listFiles(`${fileSystemRoot}/${config.environments_dir}`)
                 return {
                     root: config,
                     environments: environments

@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Box, Text, useInput} from 'ink';
-import { InkStateService, IMainViewProps, getInkState, setCurrentKey } from '../services/InkStateService.js';
+import { InkStateService, IMainViewProps } from '../services/InkStateService.js';
 import { Effect, Exit, Layer, ManagedRuntime } from 'effect';
-import { BunContext } from '@effect/platform-bun';
 import { FileSystemService } from '../services/FileSystemService.js';
 import {PanfactumConfigService } from '../services/PanfactumConfigService.js'
 
@@ -10,10 +9,7 @@ const MainView: React.FC = () => {
     
     const [viewState, setViewState] = useState<IMainViewProps | undefined>()
     
-    // TODO: Odd to me that InkStateLive can have a PlatformFailure but that doesn't trickle up in the type system when we use it to run events
-    // Maybe something to consider as we draw our application boundaries that services should default launch
-    const InkStateLive = Layer.provide(InkStateService.Default, BunContext.layer)
-    const GlobalConfigLive = Layer.mergeAll(PanfactumConfigService.Default, FileSystemService.Default, InkStateLive)
+    const GlobalConfigLive = Layer.mergeAll(PanfactumConfigService.Default, FileSystemService.Default, InkStateService.Default)
     const runtime = ManagedRuntime.make(GlobalConfigLive)
 
     useEffect(() => {
@@ -29,18 +25,18 @@ const MainView: React.FC = () => {
                 })}
             })
         })
-        // runtime.runPromiseExit(getInkState).then((inkState) => {
-        //     Exit.match(inkState, {
-        //         onFailure: (cause) => {},
-        //         onSuccess: (viewProps) => {setViewState(viewProps)}
-        //     })
-        // })
     }, [])
 
     // TODO: Schema validation at I/O boundary here
     useInput((input, key) => {
-        runtime.runPromise(setCurrentKey(input)).then((inkState) => {
-            setViewState(inkState)
+        runtime.runPromiseExit(Effect.gen(function* () {
+            const inkService = yield* InkStateService
+            return yield* inkService.updateCurrentKey(input)
+        })).then((result) => {
+            Exit.match(result, {
+                onFailure: (cause) => {console.log(`${cause}`)},
+                onSuccess: () => {}
+            })
         })
     })
 
