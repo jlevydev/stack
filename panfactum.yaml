@@ -1,7 +1,7 @@
 repo_name: stack
 repo_url: https://github.com/Panfactum/stack
 repo_primary_branch: main
-environments_dir: packages
+environments_dir: environments
 iac_dir: infrastructure
 aws_dir: .aws
 kube_dir: .kube

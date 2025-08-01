@@ -4,7 +4,7 @@ import React from 'react';
 import MainView from '../../components/mainView.js';
 
 export default class PfCommand extends Command {
-  static description = 'Launch the Panfactum Infrastructure Manager CLI application';
+  static override description = 'Launch the Panfactum Infrastructure Manager CLI application';
 
   async run(): Promise<void> {
 
