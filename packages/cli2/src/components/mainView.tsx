@@ -30,10 +30,12 @@ const MainView: React.FC = () => {
             }
             yield* inkStateService.updateState({
                 currentView: View.Environments,
+                currentList: [],
                 environments: inkState
             })
             return {
                 currentView: View.Environments,
+                currentList: [],
                 environments: inkState
             }
         })).then((result) => {
