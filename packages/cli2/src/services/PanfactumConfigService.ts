@@ -43,15 +43,33 @@ const PanfactumConfigSchema = Schema.Struct({
 })
 interface PanfactumConfig extends Schema.Schema.Type<typeof PanfactumConfigSchema> { }
 
+// TODO: Bump on naming convention for Schema and associated types. Using the same name seems like how the docs do it
+const PanfactumRegionSchema = Schema.Struct({
+    region: Schema.String,
+    aws_region: Schema.String,
+    aws_secondary_region: Schema.String,
+    kube_api_server: Schema.String,
+    kube_config_context: Schema.String,
+    vault_addr: Schema.String
+})
+interface PanfactumRegionSchema extends Schema.Schema.Type<typeof PanfactumRegionSchema> { }
+
+interface PanfactumRegion {
+    region: PanfactumRegionSchema
+    path: string // TODO Branded type
+}
+
 class PanfactumConfigService extends Context.Tag("PanfactumConfigService")<
     PanfactumConfigService,
     {
         readPanfactumRootConfig: Effect.Effect<PanfactumRootConfig, Error, FileSystemService>
-        listEnvironments: Effect.Effect<PanfactumEnvironment[], Error, FileSystemService>
+        readEnvironments: Effect.Effect<PanfactumEnvironment[], Error, FileSystemService>
+        readRegions: Effect.Effect<PanfactumRegion[], Error, FileSystemService>
         bootstrapPanfactumConfig: Effect.Effect<PanfactumConfig, Error, FileSystemService>
     }
 >() { }
 
+// TODO: Understand the type inferencing here that comes from yielding the service inside the functions vs in the constructor 
 const makePanfactumConfigService = Effect.gen(function* () {
     const fs = yield* FileSystemService
 
@@ -63,7 +81,7 @@ const makePanfactumConfigService = Effect.gen(function* () {
         return Schema.decodeUnknownSync<PanfactumRootConfig, PanfactumRootConfig>(PanfactumRootConfigSchema)(configBlob)
     })
 
-    const listEnvironments = Effect.gen(function* () {
+    const readEnvironments = Effect.gen(function* () {
         const fileSystemRoot = yield* fs.getRepoRoot()
         const { environments_dir } = yield* readPanfactumRootConfig
 
@@ -86,8 +104,21 @@ const makePanfactumConfigService = Effect.gen(function* () {
         return yield* Effect.all(environmentFileEffects)
     })
 
+    const readRegions = Effect.gen(function* () {
+        return [{
+            region: {
+                region: "",
+                aws_region: "",
+                aws_secondary_region: "",
+                kube_api_server: "",
+                kube_config_context: "",
+                vault_addr: ""
+            },
+            path: ""
+        }]
+    })
+
     const bootstrapPanfactumConfig = Effect.gen(function* () {
-        const fs = yield* FileSystemService
         const fileSystemRoot = yield* fs.getRepoRoot()
         // TODO: Maybe wrap readFile + parseYaml together
         const file = yield* fs.readFile(`${fileSystemRoot}/panfactum.yaml`)
@@ -120,7 +151,8 @@ const makePanfactumConfigService = Effect.gen(function* () {
 
     return {
         readPanfactumRootConfig,
-        listEnvironments,
+        readEnvironments,
+        readRegions,
         bootstrapPanfactumConfig
     }
 })
