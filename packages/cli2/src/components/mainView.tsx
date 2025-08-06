@@ -1,16 +1,17 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, Text, useInput} from 'ink';
 import { InkStateService, View, type IMainViewProps } from '../services/InkStateService.js';
-import { Effect, Exit, Fiber, Layer, ManagedRuntime, Stream } from 'effect';
+import { Effect, Exit, Fiber, ManagedRuntime, Stream } from 'effect';
 import { FileSystemService } from '../services/FileSystemService.js';
 import { PanfactumConfigService } from '../services/PanfactumConfigService.js'
 
-const MainView: React.FC = () => {
+interface MainViewProps {
+    runtime: ManagedRuntime.ManagedRuntime<PanfactumConfigService | FileSystemService | InkStateService, never>
+}
+
+const MainView: React.FC<MainViewProps> = ({ runtime }) => {
     
     const [viewState, setViewState] = useState<IMainViewProps | undefined>()
-    
-    const GlobalConfigLive = Layer.mergeAll(PanfactumConfigService.Default, FileSystemService.Default, InkStateService.Default)
-    const runtime = useMemo(() => ManagedRuntime.make(GlobalConfigLive), []) // TODO: Understand this better
 
     useEffect(() => {
         runtime.runPromiseExit(Effect.gen(function* () {
