@@ -1,6 +1,10 @@
 import { Box, Text, useInput } from "ink";
 import React, { useEffect, useState } from "react";
 
+// TODO: Remove state and have it passed in
+// TODO: Call backs passed in from the layer above
+// Views are implementations of a lay out
+// Look into testing
 interface ListViewProps {
     getColumns: () => string[]
     getRows: () => string[][]
