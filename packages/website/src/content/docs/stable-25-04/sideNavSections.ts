@@ -1,5 +1,5 @@
 
-import { makeModuleDir } from "@/components/layouts/docs/util/makeModuleDir.ts";
+import { makeModuleDir } from "@/components/layouts/docs/util/makeModuleList.ts";
 
 import modules from "./modules.json";
 import {

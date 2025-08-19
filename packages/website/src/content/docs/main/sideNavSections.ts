@@ -1,7 +1,7 @@
 
-import { makeModuleDir } from "@/components/layouts/docs/util/makeModuleDir.ts";
+import { makeFlatModuleList } from "@/components/layouts/docs/util/makeModuleList.ts";
 
-import modules from "./modules.json";
+import modules from "./modules/modules.json";
 import {
   NavIcons,
   type TopLevelDocsSectionMetadata,
@@ -431,6 +431,12 @@ export const SIDENAV_SECTIONS: TopLevelDocsSectionMetadata[] = [
     ],
   },
   {
+    text: "Modules",
+    path: "/modules",
+    icon: NavIcons.analyze,
+    sub: makeFlatModuleList(modules.modules),
+  },
+  {
     text: "Reference",
     path: "/reference",
     icon: NavIcons.analyze,
@@ -462,63 +468,6 @@ export const SIDENAV_SECTIONS: TopLevelDocsSectionMetadata[] = [
           {
             text: "BuildKit Config Files",
             path: "/buildkit",
-          },
-        ],
-      },
-      {
-        text: "Infrastructure Modules",
-        path: "/infrastructure-modules",
-        sub: [
-          {
-            text: "Overview",
-            path: "/overview",
-          },
-          {
-            text: "Direct Modules",
-            path: "/direct",
-            sub: [
-              {
-                text: "AWS",
-                path: "/aws",
-                sub: makeModuleDir(modules.modules, "aws", "direct"),
-              },
-              {
-                text: "Authentik",
-                path: "/authentik",
-                sub: makeModuleDir(modules.modules, "authentik", "direct"),
-              },
-              {
-                text: "Kubernetes",
-                path: "/kubernetes",
-                sub: makeModuleDir(modules.modules, "kubernetes", "direct"),
-              },
-              {
-                text: "Vault",
-                path: "/vault",
-                sub: makeModuleDir(modules.modules, "vault", "direct"),
-              },
-            ],
-          },
-          {
-            text: "Submodules",
-            path: "/submodule",
-            sub: [
-              {
-                text: "AWS",
-                path: "/aws",
-                sub: makeModuleDir(modules.modules, "aws", "submodule"),
-              },
-              {
-                text: "Kubernetes",
-                path: "/kubernetes",
-                sub: makeModuleDir(modules.modules, "kubernetes", "submodule"),
-              },
-              {
-                text: "Workflows",
-                path: "/workflow",
-                sub: makeModuleDir(modules.modules, "workflow", "submodule"),
-              },
-            ],
           },
         ],
       },

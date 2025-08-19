@@ -1,0 +1,62 @@
+---
+title: "AWS VPC Setup Guide"
+description: "Step-by-step guide for setting up AWS VPC with the Panfactum framework"
+---
+
+# AWS VPC Setup Guide
+
+This guide walks you through setting up an AWS VPC using the `aws_vpc` module in your Panfactum infrastructure.
+
+## Prerequisites
+
+Before setting up your VPC, ensure you have:
+
+- AWS account properly configured
+- Panfactum devShell installed and configured
+- Terraform/OpenTofu CLI available
+
+## Basic Setup
+
+1. **Create your module configuration**:
+
+```hcl
+module "vpc" {
+  source = "github.com/Panfactum/stack.git//packages/infrastructure/aws_vpc?ref=__PANFACTUM_VERSION_MAIN__"
+  
+  vpc_name               = "main"
+  vpc_cidr               = "10.0.0.0/16"
+  vpc_extra_tags         = {}
+  
+  # Provider configuration
+  providers = {
+    aws = aws.main
+  }
+}
+```
+
+2. **Apply the configuration**:
+
+```bash
+terragrunt apply
+```
+
+## Best Practices
+
+- **CIDR Planning**: Choose your CIDR blocks carefully to avoid conflicts with other networks
+- **Tagging**: Use consistent tagging strategies for cost management and organization
+- **Security**: Always enable VPC Flow Logs for security monitoring
+
+## Common Issues
+
+### CIDR Overlap
+If you see CIDR overlap errors, ensure your VPC CIDR doesn't conflict with existing networks.
+
+### Route Table Conflicts
+Check that custom route tables don't interfere with the module's routing logic.
+
+## Next Steps
+
+After setting up your VPC, consider:
+- Setting up subnets with the appropriate modules
+- Configuring NAT gateways for private subnet internet access
+- Setting up VPC endpoints for AWS services

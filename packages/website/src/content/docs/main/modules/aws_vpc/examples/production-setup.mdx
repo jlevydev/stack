@@ -1,0 +1,95 @@
+---
+title: "Production VPC Setup Example"
+description: "Production-ready AWS VPC configuration with high availability"
+---
+
+# Production VPC Setup Example
+
+This example demonstrates a production-ready VPC configuration with high availability across multiple availability zones.
+
+## Configuration
+
+```hcl
+module "prod_vpc" {
+  source = "github.com/Panfactum/stack.git//packages/infrastructure/aws_vpc?ref=__PANFACTUM_VERSION_MAIN__"
+  
+  vpc_name     = "production"
+  vpc_cidr     = "10.100.0.0/16"
+  
+  vpc_extra_tags = {
+    Environment     = "production"
+    CostCenter      = "engineering"
+    Owner           = "platform-team"
+    BusinessUnit    = "core-services"
+    BackupRequired  = "true"
+    MonitoringLevel = "enhanced"
+  }
+  
+  providers = {
+    aws = aws.main
+  }
+}
+```
+
+## Production Considerations
+
+### Security
+- VPC Flow Logs are automatically enabled
+- Default security group rules are restrictive
+- Network ACLs provide additional security layer
+
+### High Availability
+- Subnets are created across all available AZs
+- NAT Gateways are deployed in each AZ for redundancy
+- Cross-AZ traffic is minimized
+
+### Monitoring
+- VPC Flow Logs are sent to CloudWatch
+- Network performance monitoring is enabled
+- Cost allocation tags are properly configured
+
+### Compliance
+All tags support compliance requirements:
+- **CostCenter**: For financial tracking
+- **Owner**: For operational responsibility
+- **BackupRequired**: For disaster recovery planning
+- **MonitoringLevel**: For alerting configuration
+
+## Integration with Other Services
+
+### Database Subnets
+```hcl
+module "database_subnets" {
+  source = "./database-subnet-module"
+  
+  vpc_id = module.prod_vpc.vpc_id
+  # Configure isolated subnets for databases
+}
+```
+
+### Load Balancer Setup
+```hcl
+module "application_lb" {
+  source = "./alb-module"
+  
+  vpc_id     = module.prod_vpc.vpc_id
+  subnet_ids = module.prod_vpc.public_subnet_ids
+  # Additional ALB configuration
+}
+```
+
+## Cost Optimization
+
+For production workloads:
+- Use VPC endpoints for frequently accessed AWS services
+- Consider Reserved Instances for NAT Gateways in high-traffic scenarios
+- Monitor data transfer costs between AZs
+- Implement proper subnet sizing to avoid IP waste
+
+## Disaster Recovery
+
+This configuration supports disaster recovery through:
+- Multi-AZ deployment
+- Automated backups via proper tagging
+- Infrastructure as Code for rapid reconstruction
+- Cross-region replication capabilities

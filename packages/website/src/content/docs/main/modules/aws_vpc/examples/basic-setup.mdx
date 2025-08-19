@@ -1,0 +1,58 @@
+---
+title: "Basic VPC Setup Example"
+description: "Simple example of setting up an AWS VPC for development"
+---
+
+# Basic VPC Setup Example
+
+This example shows the minimal configuration needed to set up an AWS VPC for development purposes.
+
+## Configuration
+
+```hcl
+module "dev_vpc" {
+  source = "github.com/Panfactum/stack.git//packages/infrastructure/aws_vpc?ref=__PANFACTUM_VERSION_MAIN__"
+  
+  vpc_name     = "development"
+  vpc_cidr     = "10.0.0.0/16"
+  
+  vpc_extra_tags = {
+    Environment = "development"
+    Team        = "platform"
+  }
+  
+  providers = {
+    aws = aws.main
+  }
+}
+```
+
+## Outputs
+
+After applying this configuration, you'll get:
+
+- **VPC ID**: Available as `module.dev_vpc.vpc_id`
+- **VPC CIDR**: Available as `module.dev_vpc.vpc_cidr`
+- **Default Security Group**: Available as `module.dev_vpc.default_security_group_id`
+
+## Usage in Other Modules
+
+Reference this VPC in other modules:
+
+```hcl
+module "my_application" {
+  source = "./my-app-module"
+  
+  vpc_id = module.dev_vpc.vpc_id
+  # ... other configuration
+}
+```
+
+## Cost Considerations
+
+This basic setup will incur minimal AWS costs:
+- VPC: Free
+- NAT Gateway: ~$45/month per AZ
+- VPC Endpoints: Variable based on usage
+
+For development environments, consider using a single NAT Gateway to reduce costs.

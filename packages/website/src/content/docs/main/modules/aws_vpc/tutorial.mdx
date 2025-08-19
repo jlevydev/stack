@@ -1,0 +1,100 @@
+---
+title: "AWS VPC Tutorial"
+description: "Hands-on tutorial for creating your first AWS VPC with Panfactum"
+---
+
+# AWS VPC Tutorial
+
+In this tutorial, you'll create a complete AWS VPC setup from scratch using the Panfactum framework.
+
+## What We'll Build
+
+By the end of this tutorial, you'll have:
+- A VPC with public and private subnets
+- Proper routing and NAT configuration
+- Security groups and configured
+- VPC Flow Logs enabled
+
+## Step 1: Initialize Your Infrastructure
+
+Create a new directory for your VPC configuration:
+
+```bash
+mkdir my-vpc-setup
+cd my-vpc-setup
+```
+
+## Step 2: Create the Terragrunt Configuration
+
+Create `terragrunt.hcl`:
+
+```hcl
+include "root" {
+  path = find_in_parent_folders()
+}
+
+terraform {
+  source = "github.com/Panfactum/stack.git//packages/infrastructure/aws_vpc?ref=__PANFACTUM_VERSION_MAIN__"
+}
+
+inputs = {
+  vpc_name               = "tutorial-vpc"
+  vpc_cidr               = "10.1.0.0/16"
+  
+  vpc_extra_tags = {
+    Purpose = "Tutorial"
+    Owner   = "DevOps Team"
+  }
+}
+```
+
+## Step 3: Plan and Apply
+
+Run the following commands:
+
+```bash
+# Initialize the module
+terragrunt init
+
+# Review the planned changes
+terragrunt plan
+
+# Apply the configuration
+terragrunt apply
+```
+
+## Step 4: Verify Your Setup
+
+After applying, verify your VPC was created:
+
+```bash
+# List VPCs
+aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key==`Name` && Value==`tutorial-vpc`]]'
+
+# Check VPC Flow Logs
+aws logs describe-log-groups --log-group-name-prefix "/aws/vpc/flowlogs"
+```
+
+## Step 5: Clean Up
+
+When you're done with the tutorial:
+
+```bash
+terragrunt destroy
+```
+
+## Troubleshooting
+
+### Common Errors
+
+**Error: VPC limit exceeded**
+- Check your VPC limits in AWS console
+- Clean up unused VPCs
+
+**Error: CIDR conflict**
+- Choose a different CIDR block
+- Check existing VPC CIDR ranges
+
+## Conclusion
+
+You've successfully created an AWS VPC using Panfactum! This VPC can now serve as the foundation for your AWS infrastructure.
