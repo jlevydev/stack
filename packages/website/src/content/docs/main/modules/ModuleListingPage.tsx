@@ -9,6 +9,12 @@ interface IModuleData {
   module: string;
   type: string;
   group: string;
+  sub?: Array<{
+    path: string;
+    text: string;
+    sub?: Array<{ path: string; text: string }>;
+  }>;
+  hasContent?: boolean;
 }
 
 interface IModuleListingPageProps {
@@ -81,7 +87,7 @@ export const ModuleListingPage: Component<IModuleListingPageProps> = (props) => 
             <select
               id="type-filter"
               value={selectedType()}
-              onInput={(e) => setSelectedType(e.currentTarget.value)}
+              onChange={(e) => setSelectedType(e.currentTarget.value)}
               class="w-full px-3 py-2 bg-primary border border-primary rounded text-primary focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="all">All Types</option>
@@ -102,7 +108,7 @@ export const ModuleListingPage: Component<IModuleListingPageProps> = (props) => 
             <select
               id="group-filter"
               value={selectedGroup()}
-              onInput={(e) => setSelectedGroup(e.currentTarget.value)}
+              onChange={(e) => setSelectedGroup(e.currentTarget.value)}
               class="w-full px-3 py-2 bg-primary border border-primary rounded text-primary focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="all">All Groups</option>
@@ -147,7 +153,7 @@ interface IModuleCardProps {
 const ModuleCard: Component<IModuleCardProps> = (props) => {
   return (
     <a
-      href={`/docs/main/modules/${props.module.module}`}
+      href={`/docs/main/modules/${props.module.module}/reference`}
       class={clsx(
         "block p-4 bg-secondary border border-primary rounded-lg",
         "hover:bg-accent hover:border-brand-500 transition-colors duration-200",

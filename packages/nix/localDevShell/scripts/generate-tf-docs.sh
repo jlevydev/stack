@@ -104,3 +104,7 @@ for d in "$TERRAFORM_MODULES_DIR"/*; do
 done
 
 echo "$JSON" >"$DOCS_VERSION_DIR/modules.json"
+
+# Enhance the modules.json with filesystem content structure
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCS_VERSION_DIR="$DOCS_VERSION_DIR" node "$SCRIPT_DIR/enhance-modules-json.js"
